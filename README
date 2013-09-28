@@ -1,0 +1,15 @@
+This work was implemented in C++.
+
+Here I implement the Broker Design Pattern in a UI program. Although explained below is the implementation, you will also find the comments in the code helpful.
+
+The Program begins from the main function where first all the registration is done so the objects in the broker pattern can talk to one another (ie register client broker to client proxy, server broker to the client broker, and servers to the server broker). During registration i am only storing server brokers in a hash map within the client broker so i can use it for verification. for this and the rest, however, i am also storing a reference to the object instead of putting it in a container. I would ideally store everything in a container but i asked Sean and Pete and was told its find to just store object references for now during registration.
+
+Next we create a client object for the user (since the user is the client) and asks the user if they would like to add two number or return the length of a string. The user decides and then provides the input accordingly. The input collected is sent to the Client Proxy which (via composition) create a CallObject (the IDL in this program or Call Message) and passes to the object the input to store. It then passes this CallObject to the Broker (client broker class) which uses the CallObject to get the user input and store it in a string. It then locates the Server Broker (remote broker ideally) which I just call “lab2 broker” and passes this string to it. No Bridge between Brokers is used here since i was told it wasn't necessary for the lab. If it is cannot locate the broker it returns an error back to the user.
+
+The Server Broker takes the string and create a CallObject from it passing it information with the string that is necessary. It then passes this CallObject to the Server Proxy with the address of the server that is registerd to the server broker for excuting the required function call. The Server Proxy converts the CallObject with the user input into the actually user input and passes the input to a Servant that it knows can perform the operators requested by the user. The Servant performs the operation and returns the value to the Server which then returns the value to the Server Proxy. The Server Proxy placed this return value in the CallObject and sends it to the Server Broker. The Server Broker converts the CallObject to a string with the return value by extracting the return value stored in the CallObject and passes the String to the Broker (Client Broker in this case). The Broker converts the string to a CallObject passing it to the Client Proxy which then converts the CallObject to its appropriate return type expected by the user and passes it to the Client and the Client return the value to the main function for the user.
+
+The addLenght(int, int) and getLength(string) functions are used by the user.
+The way this program is set up, however, it would be very easy to add other server brokers or servers for say computing different fucntions.
+
+Thank you!
+
